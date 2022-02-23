@@ -13,8 +13,26 @@ The DayList is responsible for rendering a list of DayListItem components.
 It doesn't have any styles of its own so we don't need a DayList.scss file. 
  */
 
-export default function DayList({}) {
+export default function DayList({days, day, setDay}) {
+
+  const dings = days.map(dayo => {
+    const { id, name, spots } = dayo;
+    return <DayListItem 
+    
+      key={id} 
+      name={name} 
+      spots={spots} 
+      selected={name === day} 
+      setDay={setDay} 
+
+      />
+  })
+  
   return (
-    <div>DayList</div>
+    <ul>
+      <li>
+        {dings}
+      </li>
+    </ul>
   )
 }
