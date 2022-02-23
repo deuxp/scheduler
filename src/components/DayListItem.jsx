@@ -15,7 +15,7 @@ import classNames from 'classnames';
  */
 
     export default function DayListItem({name, spots, setDay, selected}) {
-      const handleClick = (day) => setDay(day);
+
       const dayClass = classNames('day-list__item', {
         'day-list__item--selected': selected,
         'day-list__item--full': spots === 0
@@ -29,7 +29,7 @@ import classNames from 'classnames';
       }
       
       return (
-        <li className={dayClass} onClick={() => handleClick(name)}>
+        <li className={dayClass} onClick={() => setDay(name)}>
           <h2 className="text--regular">{name}</h2> 
           <h3 className="text--light">{formatSpots()}</h3>
         </li>
