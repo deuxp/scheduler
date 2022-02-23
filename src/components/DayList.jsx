@@ -29,7 +29,7 @@ export default function DayList({days, day, setDay}) {
   
   return (
     <ul>
-        {renderDayListItem}
+      {renderDayListItem}
     </ul>
   )
 }
