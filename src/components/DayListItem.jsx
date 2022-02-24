@@ -14,7 +14,7 @@ import classNames from 'classnames';
     Problem: uses the selected prop to determine which styles to apply
  */
 
-    export default function DayListItem({name, spots, setDay, selected}) {
+    export default function DayListItem({name, spots, onChange, selected}) {
 
       const dayClass = classNames('day-list__item', {
         'day-list__item--selected': selected,
@@ -22,16 +22,22 @@ import classNames from 'classnames';
       })
 
       // called in the Component render with formatSpots() since it is just something that renders without being in the async event loop
-      const formatSpots = () => {
-        return  (!spots && 'no spots remaining') ||
-                (spots === 1 && '1 spot remaining') ||
-                (spots && `${spots} spots remaining`)
-      }
+      // const formatSpots = () => {
+      //   return  (!spots && 'no spots remaining') ||
+      //           (spots === 1 && '1 spot remaining') ||
+      //           (spots && `${spots} spots remaining`)
+      // }
+      
+      const [noSpots, oneSpot, manySpots] = [
+        (!spots && 'no spots remaining'),
+        (spots === 1 && '1 spot remaining'),
+        (spots && `${spots} spots remaining`)
+      ]
       
       return (
-        <li className={dayClass} onClick={() => setDay(name)}>
+        <li className={dayClass} onClick={onChange}>
           <h2 className="text--regular">{name}</h2> 
-          <h3 className="text--light">{formatSpots()}</h3>
+          <h3 className="text--light">{noSpots || oneSpot || manySpots}</h3>
         </li>
       );
     }
