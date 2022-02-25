@@ -16,7 +16,7 @@ function InterviewerList({interviewers, value, onChange}) {
 
   const renderInterviewerList = interviewers.map(mentor => {
     const { id, name, avatar } = mentor
-    // setInterviewer has temp func rn
+
     return <InterviewerListItem 
       key={id} 
       name={name}

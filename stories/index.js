@@ -11,8 +11,13 @@ import DayList from '../src/components/DayList';
 import InterviewerListItem from '../src/components/InterviewerListItem';
 import InterviewerList from '../src/components/InterviewerList';
 import Appointment from "components/Appointment";
-import Header from 'components/Appointment/Header'
+import Header from 'components/Appointment/Header';
 import Empty from "components/Appointment/Empty";
+import Show from 'components/Appointment/Show';
+import Confirm from 'components/Appointment/Confirm';
+import Status from 'components/Appointment/Status';
+import Error from 'components/Appointment/Error';
+import Form from 'components/Appointment/Form';
 
 storiesOf("Button", module)
   .addParameters({
@@ -156,6 +161,7 @@ storiesOf("Button", module)
 
 const time = '12pm'
 const tempTime = '12pm'
+const student = 'Friedi Kleinberger'
 
 storiesOf('Appointment', module)
 .addParameters({
@@ -165,7 +171,35 @@ storiesOf('Appointment', module)
 .add('Appointment with Time', () => <Appointment time={tempTime} />)
 .add('Header', () => <Header time={time}></Header>)
 .add('Empty', () => <Empty onAdd={action('onAdd')} />)
+.add('Show', () => <Show 
+  student={student} 
+  interviewer={interviewers[1]}
+  onEdit={action('onEdit')}
+  onDelete={action('onDelete')}
+/>)
+.add('Confirm', () => <Confirm 
+  onCancel={action('onCancel')} 
+  onConfirm={action('onConfirm')}
+  message='Delete the appointment ???'
+/>)
+.add('Status', () => <Status message={'Deleting'} />)
+.add('Error', () => <Error 
+  message={'Could not delete appointment.'} 
+  onClose={action('onClose')}
+/>)
+.add('Create', () => <Form 
+  interviewers={interviewers}
+  onSave={action((a, b) => [a, b])}
+  onCancel={action('onCancel')}
+/>)
+.add('Edit', () => <Form
+  studentProp={'Alice W'}
+  interviewers={interviewers}
+  interviewerProp={2}
+  onSave={action((a, b) => [a, b])}
+  onCancel={action('onCancel')}
+/>)
 
 
 
-// ---- - - - -- -- -- -- - - - - - - ----- - - - -- -- -- -- - - - - - - -
+// ---- - - - -- -- -- -- - - - - - - ----- - - - -- -- -- -- - - - - - - -\\\
