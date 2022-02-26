@@ -1,14 +1,25 @@
 import React from 'react'
+import Empty from './Empty'
 import './styles.scss'
-// import Header from './Header'
-// import Empty from './Empty'
+import Header from './Header'
 
-export default function Appointment({time}) {
-  const slot = (time && `Appointment at ${time}`) || 'No Appointments'
+import Show from './Show'
+
+export default function Appointment({time, interview, student}) {
+  const renderInterview =
+    <Show 
+      interview={interview} 
+      student={student} 
+      className='appointment__add' 
+    />
+  const renderEmpty = <Empty className='appointment__add' />
+  
   return (
-    <div>
-
-      <article className="appointment">{slot}</article>
+    <div className='appointment'>
+      <Header time={time} />
+      {interview ? renderInterview : renderEmpty}
     </div>
   )
 }
+
+// props: (1) time (2) interview:truthy->render<Show/> || <empty/> 

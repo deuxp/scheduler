@@ -1,7 +1,7 @@
 import React from 'react'
 
-function Show({student, interviewer, onEdit, onDelete}) {
-
+function Show({interview, onEdit, onDelete}) {
+  const { interviewer, student } = interview
   
   return (
     <main className="appointment__card appointment__card--show">
