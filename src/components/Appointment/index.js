@@ -2,10 +2,13 @@ import React from 'react'
 import Empty from './Empty'
 import './styles.scss'
 import Header from './Header'
-
 import Show from './Show'
 
-export default function Appointment({time, interview, student}) {
+// props: (1) time (2) interview:truthy->render<Show/> || <empty/> 
+
+export default function Appointment(props) {
+  const { time, interview, student, id } = props
+  
   const renderInterview =
     <Show 
       interview={interview} 
@@ -21,5 +24,3 @@ export default function Appointment({time, interview, student}) {
     </div>
   )
 }
-
-// props: (1) time (2) interview:truthy->render<Show/> || <empty/> 
