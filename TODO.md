@@ -13,6 +13,7 @@
 - Who recieves the information ie (a) server or (b) client ?
 - Does the useEffect hook run after everything, like an event loop ?
   - does it update the component after the component is rendered ?
+  - Are we to just use useEffect all the time ?
 
 ## Notes
 

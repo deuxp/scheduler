@@ -1,26 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
+import axios from "axios";
 
-// mock data --- --- --- --- ---
-const days = [
-  {
-    id: 1,
-    name: "Monday",
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: "Tuesday",
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: "Wednesday",
-    spots: 0,
-  },
-];
 
 // mock data --- --- --- --- ---
 const appointments = {
@@ -62,19 +45,26 @@ const appointments = {
   }
 };
 
-// 
-const schedules = Object
-  .values(appointments)
-  .map(schedule => {
-  return <Appointment key={schedule.id} {...schedule} />
-})
-
-// added to satisfy the CSS pseudoclass -> appointment__add:last-type: {display: none;}
-schedules.push(<Appointment key='last' time='5pm' />)
-
-
 export default function Application(props) {
+
   const [day, setDay] = useState('Monday')
+  const [days, setDays] = useState([])
+  
+  useEffect(() => {
+    axios
+      .get('http://localhost:8001/api/days')
+      .then(data => setDays(data.data))
+  }, []) // an empty array will only happen once when the page is loaded.
+  
+  
+  // shape appointment data
+  const schedules = Object.values(appointments)
+    .map(schedule => {
+      return <Appointment key={schedule.id} {...schedule} />
+  })
+  
+  // added to satisfy the CSS pseudoclass -> appointment__add:last-type: {display: none;}
+  schedules.push(<Appointment key='last' time='5pm' />)
   
   return (
     <main className="layout">
