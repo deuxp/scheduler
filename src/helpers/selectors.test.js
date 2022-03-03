@@ -1,5 +1,7 @@
 import { getAppointmentsForDay } from "helpers/selectors";
 
+// insert `.only` after test to run only that test in the suite.
+
 const state = {
   days: [
     {
