@@ -6,13 +6,10 @@ import Show from './Show'
 
 // props: (1) time (2) interview:truthy->render<Show/> || <empty/> 
 
-export default function Appointment(props) {
-  const { time, interview, student } = props
-  
+export default function Appointment({ time, interview, student }) {
   const renderInterview =
     <Show 
       interview={interview} 
-      student={student} 
       className='appointment__add' 
     />
   const renderEmpty = <Empty className='appointment__add' />
