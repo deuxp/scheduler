@@ -2,24 +2,24 @@ import { React, useState } from 'react'
 
 export function useVisualMode(initState) {
   const [mode, setMode] = useState(initState)
-  const [history, setHistory] = useState([initState])   // stack data structure (LIFO)
+  const [history, setHistory] = useState([initState]) // stack data structure (LIFO)
   // all logic inside
   const back = () => { 
     if (history.length>1) {
-      setMode(history[history.length - 2])              // roll back
-      history.splice(history[history.length - 1], 1)    // pop the top
+      history.splice(history.length - 1, 1) // pop the top
+      setMode(history[history.length - 1]) // roll back
     } 
   }
-  const transition = (newmode) => { 
-      setHistory([...history, newmode])
+  const transition = (newmode, replace=false) => { 
+    if (replace) history.splice(history.length - 1, 1) // pop
+      setHistory([...history, newmode]) // replace
       setMode(newmode)
-      
   }
   
   return {
     mode,
     transition,
-    back
+    back,
   }
 }
 

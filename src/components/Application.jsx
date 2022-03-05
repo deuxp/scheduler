@@ -37,7 +37,7 @@ export default function Application(props) {
   const schedules = dailyAppointements.map(appointment => {
       // map appointment.interview.interviewer: n to obj
       const interview = getInterview(state, appointment.interview)
-      console.log(interview)
+
       return <Appointment key={appointment.id}
                           id={appointment.id}                    
                           time={appointment.time}
