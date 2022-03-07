@@ -8,9 +8,8 @@ export function getAppointmentsForDay(state, day) {
   let result = [];
   state.days.forEach(jour => {
     if (jour.name === day) {
-      result = result
-        .concat(jour.appointments)
-          .map(appointment => state.appointments[appointment])
+      result = result.concat(jour.appointments)
+        .map(id => state.appointments[id])
     }
   });
   return result;
@@ -23,3 +22,17 @@ export function getInterview (state, interview) {
   }
   return null
 }
+
+export function getInterviewersForDay (state, day) {
+  let result =[];
+  if (state.days.length > 0) {
+    state.days.forEach(d => {
+      if (d.name === day) {
+        result = result.concat(d.interviewers)
+          .map(id => state.interviewers[id])
+      }
+    })
+  }
+  return result
+};
+
