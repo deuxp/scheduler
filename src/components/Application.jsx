@@ -33,6 +33,22 @@ export default function Application(props) {
     }) 
   }, [])
   
+
+  // Book the appointments - should change the state and axios POST to update the database
+  function bookInterview(id, interview) {
+    console.log(id, interview)
+  };
+
+  // Saving an appointment
+  function save(name, interviewer, id) {
+    const interview = { 
+      student: name,
+      interviewer
+    }
+    bookInterview(id, interview)
+  };
+
+  
   // shape appointment data -> appointment: { id, time, interview }
   const schedules = dailyAppointements.map(appointment => {
       // map appointment.interview.interviewer: n to obj
@@ -44,6 +60,8 @@ export default function Application(props) {
                           time={appointment.time}
                           interview={interview}
                           interviewers={interviewers}
+                          bookInterview={bookInterview}
+                          save={save}
       />
   })
   // CSS pseudoclass -> appointment__add:last-type: {display: none;}

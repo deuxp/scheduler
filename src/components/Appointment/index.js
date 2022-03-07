@@ -6,7 +6,7 @@ import Show from './Show';
 import Form from './Form';
 import { useVisualMode } from 'hooks/useVisualMode';
 
-export default function Appointment({ time, interview, interviewers }) {
+export default function Appointment({ time, interview, interviewers, bookInterview, id, save }) {
 
   const EMPTY = 'EMPTY',
         SHOW = 'SHOW',
@@ -15,17 +15,21 @@ export default function Appointment({ time, interview, interviewers }) {
   
   const renderShow = <Show 
     interview={interview} 
-    className='appointment__add' />
+    className='appointment__add' 
+    bookInterview={bookInterview} />
 
   const renderEmpty = <Empty 
     className='appointment__add' 
-    onAdd={() => transition(CREATE)} />
+    onAdd={() => transition(CREATE)} 
+    bookInterview={bookInterview} />
 
   const renderForm = <Form 
     interviewers={interviewers}
-    onSave={() => console.log('onSave')}
-    onCancel={() => back()} />
-  
+    onSave={(name, interviewer) => save(name, interviewer)}
+    onCancel={() => back()} 
+    bookInterview={bookInterview} 
+    id={id} />
+
   return (
     <div className='appointment'>
       <Header time={time} />
