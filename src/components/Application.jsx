@@ -37,12 +37,13 @@ export default function Application(props) {
   const schedules = dailyAppointements.map(appointment => {
       // map appointment.interview.interviewer: n to obj
       const interview = getInterview(state, appointment.interview)
-      // const interviewers = getInterviewersForDay(state, state.day)
+      const interviewers = getInterviewersForDay(state, state.day)
 
       return <Appointment key={appointment.id}
                           id={appointment.id}                    
                           time={appointment.time}
                           interview={interview}
+                          interviewers={interviewers}
       />
   })
   // CSS pseudoclass -> appointment__add:last-type: {display: none;}

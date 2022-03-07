@@ -6,7 +6,7 @@ import Show from './Show';
 import Form from './Form';
 import { useVisualMode } from 'hooks/useVisualMode';
 
-export default function Appointment({ time, interview, _id }) {
+export default function Appointment({ time, interview, interviewers }) {
 
   const EMPTY = 'EMPTY',
         SHOW = 'SHOW',
@@ -22,7 +22,7 @@ export default function Appointment({ time, interview, _id }) {
     onAdd={() => transition(CREATE)} />
 
   const renderForm = <Form 
-    interviewers={[]}
+    interviewers={interviewers}
     onSave={() => console.log('onSave')}
     onCancel={() => back()} />
   
