@@ -34,9 +34,11 @@ export default function Application(props) {
   }, [])
   
 
+
+
+
   // Book the appointments - should change the state and axios POST to update the database
-  function bookInterview(id, interview) {
-    console.log(interview.interviewer)
+  function bookInterview(id, interview, cb) {
     const appointment = {
       // new interview data replaces null default 
       ...state.appointments[id],
@@ -47,16 +49,28 @@ export default function Application(props) {
       ...state.appointments,
       [id]: appointment
     }
-    console.log('the following is the appointments')
-    console.log(appointment)
-    // update the state locally, the interviewer data will be attached to the ID and passed down to the Show via the selector operation
-    setState({
-      ...state,
-      appointments
-    })
+    // update the API database, the interviewer data will be attached to the ID and passed down to the Show via the selector operation
+    axios.put(`http://localhost:8001/api/appointments/${id}`, appointment)
+      .then(response => {
+        if (response.status === 204) {
+          setState(prev => ({
+            ...prev,
+            appointments
+          }))
+        }
+      })
+      .then(() => {
+        console.log('API updated successfully')
+        cb()
+      })
+      .catch(err => {
+        console.log(err.message)
+      })
   };
 
  
+
+
 
 
 
