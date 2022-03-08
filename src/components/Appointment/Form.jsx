@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import Button from 'components/Button'
 import InterviewerList from 'components/InterviewerList'
 
-function Form({onSave, onCancel, studentProp, interviewerProp, interviewers}) {
+function Form({onSave, onCancel, interviewers}) {
 
-  const [student, setStudent] = useState(studentProp || '')
-  const [interviewer, setInterviewer] = useState(interviewerProp || null) // null since expecting Number
+  const [student, setStudent] = useState('')
+  const [interviewer, setInterviewer] = useState(null) // null since expecting Number
 
   const reset = () => {
     setStudent('')
@@ -40,7 +40,9 @@ function Form({onSave, onCancel, studentProp, interviewerProp, interviewers}) {
   <section className="appointment__card-right">
     <section className="appointment__actions">
       <Button danger onClick={cancel}>Cancel</Button>
-      <Button confirm onClick={() => onSave(student, interviewer)}>Save</Button>
+      <Button confirm onClick={() => onSave(student, interviewer)}>Save</Button> 
+
+      
     </section>
   </section>
 </main>
@@ -49,3 +51,4 @@ function Form({onSave, onCancel, studentProp, interviewerProp, interviewers}) {
 }
 
 export default Form
+

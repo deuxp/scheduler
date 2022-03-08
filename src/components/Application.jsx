@@ -36,32 +36,43 @@ export default function Application(props) {
 
   // Book the appointments - should change the state and axios POST to update the database
   function bookInterview(id, interview) {
-    console.log(id, interview)
-  };
-
-  // Saving an appointment
-  function save(name, interviewer, id) {
-    const interview = { 
-      student: name,
-      interviewer
+    console.log(interview.interviewer)
+    const appointment = {
+      // new interview data replaces null default 
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    // updated clone of appointments
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
     }
-    bookInterview(id, interview)
+    console.log('the following is the appointments')
+    console.log(appointment)
+    // update the state locally, the interviewer data will be attached to the ID and passed down to the Show via the selector operation
+    setState({
+      ...state,
+      appointments
+    })
   };
 
-  
+ 
+
+
+
   // shape appointment data -> appointment: { id, time, interview }
   const schedules = dailyAppointements.map(appointment => {
       // map appointment.interview.interviewer: n to obj
       const interview = getInterview(state, appointment.interview)
       const interviewers = getInterviewersForDay(state, state.day)
-
+      
       return <Appointment key={appointment.id}
                           id={appointment.id}                    
                           time={appointment.time}
                           interview={interview}
                           interviewers={interviewers}
                           bookInterview={bookInterview}
-                          save={save}
+
       />
   })
   // CSS pseudoclass -> appointment__add:last-type: {display: none;}
