@@ -15,6 +15,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
         CREATE = 'CREATE',
         SAVING = 'SAVING',
         CONFIRM = 'CONFIRM',
+        EDIT = 'EDIT',
         { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY),
         [statusMessage, setStatusMessage] = useState('')
         
@@ -53,6 +54,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
     interviewer={interview && interview.interviewer} 
     student={interview && interview.student}
     onDelete={() => transition(CONFIRM)}
+    onEdit={() => transition(EDIT)}
     className='appointment__add' 
     />
 
@@ -65,6 +67,8 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
     interviewers={interviewers}
     onSave={save}
     onCancel={() => back()} 
+    studentName={interview && interview.student}
+    interviewerID={interview && interview.interviewer.id}
     />
 
   return (
@@ -75,6 +79,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
       {mode === CREATE && renderForm}
       {mode === SAVING && renderStatus}
       {mode === CONFIRM && renderConfirm}
+      {mode === EDIT && renderForm}
     </div>
   )
 }

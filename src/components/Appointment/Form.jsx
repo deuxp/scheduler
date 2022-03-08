@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import Button from 'components/Button'
 import InterviewerList from 'components/InterviewerList'
 
-function Form({onSave, onCancel, interviewers}) {
-
-  const [student, setStudent] = useState('')
-  const [interviewer, setInterviewer] = useState(null) // null since expecting Number
+function Form({onSave, onCancel, interviewers, studentName, interviewerID}) {
+  console.log(interviewerID)
+  const [student, setStudent] = useState(studentName || '')
+  const [interviewer, setInterviewer] = useState(interviewerID || null)
 
   const reset = () => {
     setStudent('')
