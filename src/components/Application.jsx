@@ -35,16 +35,44 @@ export default function Application(props) {
   
 
 
+  // function to (a) delete the interview (b) update the API with axios (c) pass this down to Application.index.jsx
+  function deleteInterview(id, cb) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    }
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    }
+    // axios update to the db
+    axios.delete(`http://localhost:8001/api/appointments/${id}`)
+      .then(response => {
+        if (response.status === 204) {
+          setState(prev => ({
+            ...prev,
+            appointments
+          }))
+        }
+      })
+      .then(() => {
+        console.log('API successfully deleted appointment')        
+        cb()
+      })
+      .catch(err => {
+        console.log(err.message)
+      })
+  }
 
 
   // Book the appointments - should change the state and axios POST to update the database
   function bookInterview(id, interview, cb) {
     const appointment = {
-      // new interview data replaces null default 
+      // new interview data replaces null default - used to update local state and API
       ...state.appointments[id],
       interview: { ...interview }
     };
-    // updated clone of appointments
+    // updated clone of appointments - used to update local state
     const appointments = {
       ...state.appointments,
       [id]: appointment
@@ -86,6 +114,7 @@ export default function Application(props) {
                           interview={interview}
                           interviewers={interviewers}
                           bookInterview={bookInterview}
+                          deleteInterview={deleteInterview}
 
       />
   })
