@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './styles.scss';
 import Empty from './Empty';
 import Header from './Header';
@@ -15,19 +15,14 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
         SHOW = 'SHOW',
         CREATE = 'CREATE',
         SAVING = 'SAVING',
+        DELETING = 'DELETING',
         CONFIRM = 'CONFIRM',
         EDIT = 'EDIT',
         ERROR_DELETE = 'ERROR_DELETE',
         ERROR_SAVE = 'ERROR_SAVE',
-        { mode, transition, back, history } = useVisualMode(interview ? SHOW : EMPTY),
+        { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY),
         [statusMessage, setStatusMessage] = useState(''),
         [errorMessage, setErrorMessage] = useState('');
-        
-  
-  useEffect(() => {
-    console.log(history)
-  },[history])
-        
         
   
   // Saving an appointment -- = -= -- -- -  -- --- -- -=  -== - = -
@@ -51,7 +46,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
   // Deleting an appointment -- = -= -- -- -  -- --- -- -=  -== - = -
   function erase() {
     setStatusMessage('Deleting')
-    transition(SAVING)
+    transition(DELETING, true)
     // call the function in application
     deleteInterview(id)
       .then(() => transition(EMPTY))
@@ -105,6 +100,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
       {mode === SHOW && renderShow}
       {mode === CREATE && renderForm}
       {mode === SAVING && renderStatus}
+      {mode === DELETING && renderStatus}
       {mode === CONFIRM && renderConfirm}
       {mode === EDIT && renderForm}
       {mode === ERROR_SAVE && renderError}
