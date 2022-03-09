@@ -12,7 +12,7 @@ export function useVisualMode(initState) {
   }
   const transition = (newmode, replace=false) => { 
     if (replace) history.splice(history.length - 1, 1) // pop
-      setHistory([...history, newmode]) // replace
+      setHistory(prev => ([...prev, newmode])) // replace
       setMode(newmode)
   }
   

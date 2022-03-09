@@ -28,16 +28,18 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
     }
     setStatusMessage('Saving')
 
-    transition(SAVING)
-    bookInterview(id, interview, () => transition(SHOW))
+    transition(SAVING, true)
+    bookInterview(id, interview)
+      .then(() => transition(SHOW))
   };
   
   // Deleting an appointment -- = -= -- -- -  -- --- -- -=  -== - = -
   function erase() {
     setStatusMessage('Deleting')
-    transition(SAVING)
+    transition(SAVING, true)
     // call the function in application
-    deleteInterview(id, () => transition(EMPTY))
+    deleteInterview(id)
+      .then(() => transition(EMPTY))
   }
         
   const renderConfirm = <Confirm 

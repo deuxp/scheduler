@@ -3,7 +3,6 @@ import Button from 'components/Button'
 import InterviewerList from 'components/InterviewerList'
 
 function Form({onSave, onCancel, interviewers, studentName, interviewerID}) {
-  console.log(interviewerID)
   const [student, setStudent] = useState(studentName || '')
   const [interviewer, setInterviewer] = useState(interviewerID || null)
 
