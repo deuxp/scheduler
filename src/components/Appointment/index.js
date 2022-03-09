@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './styles.scss';
 import Empty from './Empty';
 import Header from './Header';
@@ -7,6 +7,7 @@ import Show from './Show';
 import Form from './Form';
 import Confirm from './Confirm';
 import Status from './Status';
+import Error from './Error';
 import { useVisualMode } from 'hooks/useVisualMode';
 
 function Appointment({ time, interview, interviewers, bookInterview, deleteInterview, id }) {
@@ -16,8 +17,17 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
         SAVING = 'SAVING',
         CONFIRM = 'CONFIRM',
         EDIT = 'EDIT',
-        { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY),
-        [statusMessage, setStatusMessage] = useState('')
+        ERROR_DELETE = 'ERROR_DELETE',
+        ERROR_SAVE = 'ERROR_SAVE',
+        { mode, transition, back, history } = useVisualMode(interview ? SHOW : EMPTY),
+        [statusMessage, setStatusMessage] = useState(''),
+        [errorMessage, setErrorMessage] = useState('');
+        
+  
+  useEffect(() => {
+    console.log(history)
+  },[history])
+        
         
   
   // Saving an appointment -- = -= -- -- -  -- --- -- -=  -== - = -
@@ -28,20 +38,35 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
     }
     setStatusMessage('Saving')
 
-    transition(SAVING, true)
+    transition(SAVING)
     bookInterview(id, interview)
       .then(() => transition(SHOW))
+      .catch(err => {
+        console.log('Error: ', err.message)
+        setErrorMessage('cannot save appointment')
+        transition(ERROR_SAVE, true)
+      })
   };
   
   // Deleting an appointment -- = -= -- -- -  -- --- -- -=  -== - = -
   function erase() {
     setStatusMessage('Deleting')
-    transition(SAVING, true)
+    transition(SAVING)
     // call the function in application
     deleteInterview(id)
       .then(() => transition(EMPTY))
+      .catch(err => {
+        console.log('Error: ', err.message)
+        setErrorMessage('cannot delete appointment')
+        transition(ERROR_DELETE, true)
+      })
   }
-        
+
+  const renderError = <Error 
+      onClose={() => back()}
+      message={errorMessage}
+    />
+
   const renderConfirm = <Confirm 
       message={'Are You sure you want to Delete the Appointment?'}
       onCancel={() => back()}
@@ -82,6 +107,8 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
       {mode === SAVING && renderStatus}
       {mode === CONFIRM && renderConfirm}
       {mode === EDIT && renderForm}
+      {mode === ERROR_SAVE && renderError}
+      {mode === ERROR_DELETE && renderError}
     </div>
   )
 }
