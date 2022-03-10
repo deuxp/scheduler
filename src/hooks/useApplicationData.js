@@ -28,32 +28,69 @@ export default function useApplicationData() {
     }) 
   }, [])
   
+  /**
+   * Purpose: to update the number of avialable appoinments for a day
+   * @param {Array} days array of all the day objects
+   * @param {Number} appointmentID the appointment object
+   * @param {String} sign 'add' or 'subtract': specifying the operation to update availability
+   * @returns a new Array of day objects, with the spots property updated to currnt avaialbility
+   */      
+  function spots(days, appointmentID, sign) {
+    // expect add or subtract to change the operation so this function can be reused for booking and delting interviews
+    const operation = {add: 1, subtract: -1}
+    let daysUpdate =[]
+    days.forEach((day, index) => {
+      if (day['appointments'].includes(Number(appointmentID))){
+        const dayUpdate = {
+          ...days[index],
+          spots: days[index].spots + operation[sign]
+        }
+        daysUpdate = [
+          ...days
+        ]
+        daysUpdate.splice(index, 1, dayUpdate)
+      }
+    })
+    return daysUpdate;
+  }
 
-
-  // function to (a) delete the interview (b) update the API with axios (c) pass this down to Application.index.jsx
+  /**
+   * Purpose: (a) delete the interview 
+   *          (b) update the API with axios 
+   *          (c) update the state locally
+   * @param {Number} id of appointment object
+   * @returns undefined
+   * Behaviour: Promise based but only used for side-effects: setState & axios PUT request
+   *            also calls the spots() func to update the available spots for that day
+   */
   function deleteInterview(id) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    }
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    }
+    // axios update to the db
     return new Promise((resolve, reject) => {
-
-      const appointment = {
-        ...state.appointments[id],
-        interview: null
-      }
-      const appointments = {
-        ...state.appointments,
-        [id]: appointment
-      }
-      // axios update to the db
-      axios.delete(`http://localhost:8001/api/appointments/${id}`)
-      .then(response => {
-        if (response.status === 204) {
-          setState(prev => ({
-            ...prev,
-            appointments
-          }))
+    axios.delete(`http://localhost:8001/api/appointments/${id}`)
+    .then(res => {
+        if (res.status !== 204) {
+          throw new Error()
+        }
+        console.log('API successfully deleted appointment')        
+        return {...state, appointments}
+      }).then(state => {
+        // update available spots for the day
+        const days = spots(state.days, id, 'add')
+        return {
+          ...state,
+          days
         }
       })
-      .then(() => {
-        console.log('API successfully deleted appointment')        
+      .then(state => {
+        setState(state)
         resolve()
       })
       .catch(err => {
@@ -63,42 +100,59 @@ export default function useApplicationData() {
     })
   }
     
-    
-    // Book the appointments - should change the state and axios POST to update the database
-  function bookInterview(id, interview) {
+
+  
+  // Book the appointments - should change the state and axios POST to update the database
+  /**
+   * Purpose: 
+   * @param {Number} id the id of the appiontment obj
+   * @param {Object} interview new interview Object to replace null for the appointment obj
+   * @param {String} edit passed in at the <Form/> level.. If student name exists
+   *                      then the form is in Edit mode and will inform spots() 
+   *                      to not update
+   * @returns undefined 
+   * Behaviour: Promise-based, but no value is passed, only side-effects: setState & axios PUT request
+   *            also calls the spots() func to update the available spots for that day
+   */
+  function bookInterview(id, interview, edit) {
+    const appointment = {
+      // new interview data replaces null default - used to update local state and API
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    // updated clone of appointments - used to update local state
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    }
     return new Promise((resolve, reject) => {
-      const appointment = {
-        // new interview data replaces null default - used to update local state and API
-        ...state.appointments[id],
-        interview: { ...interview }
-      };
-      // updated clone of appointments - used to update local state
-      const appointments = {
-        ...state.appointments,
-        [id]: appointment
-      }
-      // update the API database, the interviewer data will be attached to the ID and passed down to the Show via the selector operation
       axios.put(`http://localhost:8001/api/appointments/${id}`, appointment)
-      .then(response => {
-        if (response.status === 204) {
-          setState(prev => ({
-            ...prev,
-            appointments
-          }))
+      .then(res => {
+        if (res.status !== 204) {
+          throw new Error()
+        }
+        console.log('API updated successfully')
+        return {...state, appointments}
+      })
+      .then(state => {
+        // spots are updated unless the form is being edited
+        const days = (!edit && spots(state.days, id, 'subtract')) || state.days
+        return {
+          ...state,
+          days
         }
       })
-      .then(() => {
-        console.log('API updated successfully')
+      .then(updateState => {
+        // this is where we update the state wholly and once
+        setState(updateState)
         resolve()
       })
       .catch(err => {
-        console.log(err.message)
+        console.log('Error in bookInterview(): ', err.message)
         reject(err)
       })
     })
   };
-    
-
 
   return {
     state,

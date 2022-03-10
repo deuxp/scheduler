@@ -16,15 +16,14 @@ export default function Application() {
   } = useApplicationData()
 
   const dailyAppointements = getAppointmentsForDay(state, state.day);
-
   // shape appointment data -> appointment: { id, time, interview }
   const schedules = dailyAppointements.map(appointment => {
-      // map appointment.interview.interviewer: id:n -> obj
+      // map appointment.interview.interviewer[id] = {...}
       const interview = getInterview(state, appointment.interview)
       const interviewers = getInterviewersForDay(state, state.day)
       
       return <Appointment key={appointment.id}
-                          id={appointment.id}                    
+                          id={appointment.id}
                           time={appointment.time}
                           interview={interview}
                           interviewers={interviewers}
