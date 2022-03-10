@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getAppointmentsForDay } from '../helpers/selectors.js'
 import axios from "axios";
 
 export default function useApplicationData() {
@@ -35,22 +36,31 @@ export default function useApplicationData() {
    * @param {String} sign 'add' or 'subtract': specifying the operation to update availability
    * @returns a new Array of day objects, with the spots property updated to currnt avaialbility
    */      
-  function spots(days, appointmentID, sign) {
+  function spots(state, appointmentID, sign) {
     // expect add or subtract to change the operation so this function can be reused for booking and delting interviews
     const operation = {add: 1, subtract: -1}
     let daysUpdate =[]
-    days.forEach((day, index) => {
+    state.days.forEach((day, index) => {
       if (day['appointments'].includes(Number(appointmentID))){
         const dayUpdate = {
-          ...days[index],
-          spots: days[index].spots + operation[sign]
+          ...state.days[index],
+          spots: getAppointmentsForDay(state, state.day)
+          .reduce((accumulator, spot)=>{
+          if (!spot.interview){
+            return accumulator += 1
+          } else {
+            return accumulator += 0
+          }
+        }, 0)
         }
         daysUpdate = [
-          ...days
+          ...state.days
         ]
         daysUpdate.splice(index, 1, dayUpdate)
+
       }
     })
+
     return daysUpdate;
   }
 
@@ -83,7 +93,10 @@ export default function useApplicationData() {
         return {...state, appointments}
       }).then(state => {
         // update available spots for the day
-        const days = spots(state.days, id, 'add')
+
+
+
+        const days = spots(state, id)
         return {
           ...state,
           days
@@ -109,7 +122,8 @@ export default function useApplicationData() {
    * @param {Object} interview new interview Object to replace null for the appointment obj
    * @param {String} edit passed in at the <Form/> level.. If student name exists
    *                      then the form is in Edit mode and will inform spots() 
-   *                      to not update
+   *                      to not update. It is the same criteria that he <Form/> uses
+   *                      for the Edit mode.
    * @returns undefined 
    * Behaviour: Promise-based, but no value is passed, only side-effects: setState & axios PUT request
    *            also calls the spots() func to update the available spots for that day
@@ -135,8 +149,9 @@ export default function useApplicationData() {
         return {...state, appointments}
       })
       .then(state => {
+
         // spots are updated unless the form is being edited
-        const days = (!edit && spots(state.days, id, 'subtract')) || state.days
+        const days = spots(state, id)
         return {
           ...state,
           days

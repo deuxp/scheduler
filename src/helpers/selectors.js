@@ -35,4 +35,3 @@ export function getInterviewersForDay (state, day) {
   }
   return result
 };
-

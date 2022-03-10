@@ -39,7 +39,7 @@ function Form({onSave, onCancel, interviewers, studentName, interviewerID}) {
   <section className="appointment__card-right">
     <section className="appointment__actions">
       <Button danger onClick={cancel}>Cancel</Button>
-      <Button confirm onClick={() => onSave(student, interviewer, studentName)}>Save</Button> 
+      <Button confirm onClick={() => onSave(student, interviewer)}>Save</Button> 
 
       
     </section>

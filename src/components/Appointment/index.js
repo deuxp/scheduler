@@ -26,7 +26,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
         
   
   // Saving an appointment -- = -= -- -- -  -- --- -- -=  -== - = -
-  function save(name, interviewer, edit) {
+  function save(name, interviewer) {
     const interview = { 
       student: name,
       interviewer
@@ -34,7 +34,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
     setStatusMessage('Saving')
 
     transition(SAVING)
-    bookInterview(id, interview, edit)
+    bookInterview(id, interview)
       .then(() => transition(SHOW))
       .catch(err => {
         console.log('Error in save(): ', err.message)
