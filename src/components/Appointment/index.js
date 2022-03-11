@@ -90,7 +90,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
     onSave={save}
     onCancel={() => back()} 
     studentName={interview && interview.student}
-    interviewerID={interview && interview.interviewer.id}
+    interviewerID={interview && interview.interviewer.id || renderEmpty}
     />
 
   return (
