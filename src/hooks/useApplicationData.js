@@ -28,41 +28,38 @@ export default function useApplicationData() {
       }))
     }) 
   }, [])
+
   
   /**
    * Purpose: to update the number of avialable appoinments for a day
    * @param {Array} days array of all the day objects
    * @param {Number} appointmentID the appointment object
-   * @param {String} sign 'add' or 'subtract': specifying the operation to update availability
    * @returns a new Array of day objects, with the spots property updated to currnt avaialbility
    */      
-  function spots(state, appointmentID, sign) {
+  function spots(state) {
     // expect add or subtract to change the operation so this function can be reused for booking and delting interviews
-    const operation = {add: 1, subtract: -1}
     let daysUpdate =[]
     state.days.forEach((day, index) => {
-      if (day['appointments'].includes(Number(appointmentID))){
+      if (day.name === state.day) {
         const dayUpdate = {
           ...state.days[index],
           spots: getAppointmentsForDay(state, state.day)
-          .reduce((accumulator, spot)=>{
-          if (!spot.interview){
-            return accumulator += 1
-          } else {
-            return accumulator += 0
-          }
-        }, 0)
+                .reduce((accumulator, availability) => {
+                  if (!availability.interview){
+                    return accumulator += 1
+                  } else {
+                    return accumulator += 0
+                  }
+                }, 0)
         }
         daysUpdate = [
           ...state.days
-        ]
-        daysUpdate.splice(index, 1, dayUpdate)
-
+        ];
+        daysUpdate.splice(index, 1, dayUpdate);
       }
-    })
-
+    });
     return daysUpdate;
-  }
+  };
 
   /**
    * Purpose: (a) delete the interview 
@@ -93,10 +90,7 @@ export default function useApplicationData() {
         return {...state, appointments}
       }).then(state => {
         // update available spots for the day
-
-
-
-        const days = spots(state, id)
+        const days = spots(state)
         return {
           ...state,
           days
@@ -114,10 +108,8 @@ export default function useApplicationData() {
   }
     
 
-  
-  // Book the appointments - should change the state and axios POST to update the database
   /**
-   * Purpose: 
+   * Purpose: Book the appointments -> change the state and axios POST to update the database
    * @param {Number} id the id of the appiontment obj
    * @param {Object} interview new interview Object to replace null for the appointment obj
    * @param {String} edit passed in at the <Form/> level.. If student name exists
@@ -128,7 +120,7 @@ export default function useApplicationData() {
    * Behaviour: Promise-based, but no value is passed, only side-effects: setState & axios PUT request
    *            also calls the spots() func to update the available spots for that day
    */
-  function bookInterview(id, interview, edit) {
+  function bookInterview(id, interview) {
     const appointment = {
       // new interview data replaces null default - used to update local state and API
       ...state.appointments[id],
@@ -149,9 +141,8 @@ export default function useApplicationData() {
         return {...state, appointments}
       })
       .then(state => {
-
         // spots are updated unless the form is being edited
-        const days = spots(state, id)
+        const days = spots(state)
         return {
           ...state,
           days
