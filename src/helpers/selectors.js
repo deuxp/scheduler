@@ -1,7 +1,7 @@
 
 /**
- * @param {{days:[{}], appointments:{a:{}}}} state 
- * @param {''} day filter by day
+ * @param {Object} state 
+ * @param {String} day filter by day
  * @returns Array of the appointments for a specified day
  */
 export function getAppointmentsForDay(state, day) {
@@ -15,6 +15,16 @@ export function getAppointmentsForDay(state, day) {
   return result;
 };
 
+/**
+ * Purpose: Complete the interview Object by replacing the interviewer's id 
+ *          with their respective Object
+ * @param {*} state 
+ * @param {Object} interview {student:String, interviewer:Number}
+ * @returns a new interview Object with the interviewer property updated info or 
+ *          null if there is no interview
+ * Behaviour: interview.interviewer is a Number which corresponds to the id of the interviewer 
+ *            in the state.interviewers Object
+ */
 export function getInterview (state, interview) {
   if ( interview ) {
     const interviewer = state.interviewers[interview.interviewer]
