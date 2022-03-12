@@ -1,6 +1,6 @@
 # Interview Scheduler
 
-Book appointments with a mentor using this dynamic sheduler built in **React**! The components were written and tested, first,  using **Storybook**. The Selector functions were written with a test-driven approach (TDD), using **Jest**.
+An application, built in **React**, that allows a user to book and/or cancel an interview! The components were written and tested, first,  using **Storybook**. The Selector functions were written with a test-driven approach (TDD), using **Jest**.
 
 This is only the front-end client. The test server for this App can be cloned from the following Repo: [scheduler-api](https://github.com/deuxp/scheduler-api).
 
