@@ -37,12 +37,11 @@ export default function useApplicationData() {
    * @returns a new Array of day objects, with the spots property updated to currnt avaialbility
    */      
   function spots(state) {
-    // expect add or subtract to change the operation so this function can be reused for booking and delting interviews
-    let daysUpdate =[]
-    state.days.forEach((day, index) => {
+    const daysUpdate = state.days.map(day => {
       if (day.name === state.day) {
-        const dayUpdate = {
-          ...state.days[index],
+        console.log('day info ', day)
+        return  {
+          ...day,
           spots: getAppointmentsForDay(state, state.day)
                 .reduce((accumulator, availability) => {
                   if (!availability.interview){
@@ -52,13 +51,11 @@ export default function useApplicationData() {
                   }
                 }, 0)
         }
-        daysUpdate = [
-          ...state.days
-        ];
-        daysUpdate.splice(index, 1, dayUpdate);
+      } else {
+        return day;
       }
     });
-    return daysUpdate;
+    return [...daysUpdate];
   };
 
   /**
