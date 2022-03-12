@@ -37,18 +37,18 @@ export default function useApplicationData() {
   function spots(state) {
     return state.days.map(day => {
       if (day.name === state.day) {
-      return {
-        ...day,
-        spots: day.appointments.reduce((accumulator, id) => {
-                if (!state.appointments[id].interview){
-                  return accumulator += 1
-                } else {
-                  return accumulator += 0
-                }
-              }, 0)
-            }
-          } else {
-            return day;
+        return {
+          ...day,
+          spots: day.appointments.reduce((accumulator, id) => {
+                  if (!state.appointments[id].interview){
+                    return accumulator += 1
+                  } else {
+                    return accumulator
+                  }
+                }, 0)
+              }
+      } else {
+        return day;
       }
     })
   };
