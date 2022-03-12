@@ -46,9 +46,9 @@ export default function useApplicationData() {
                   return accumulator += 0
                 }
               }, 0)
-        }
-      } else {
-        return day;
+            }
+          } else {
+            return day;
       }
     })
   };
