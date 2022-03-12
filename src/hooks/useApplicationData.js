@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { getAppointmentsForDay } from '../helpers/selectors.js'
 import axios from "axios";
 
 export default function useApplicationData() {
@@ -32,32 +31,29 @@ export default function useApplicationData() {
   
   /**
    * Purpose: to update the number of avialable appoinments for a day
-   * @param {Array} days array of all the day objects
-   * @param {Number} appointmentID the appointment object
-   * @returns a new Array of day objects, with the spots property updated to currnt avaialbility
+   * @param {Object} state The state Object
+   * @returns a new Array of day objects, with the spots property updated to current avaialbility
    */      
   function spots(state) {
-    const daysUpdate = state.days.map(day => {
+    return state.days.map(day => {
       if (day.name === state.day) {
-        console.log('day info ', day)
-        return  {
-          ...day,
-          spots: getAppointmentsForDay(state, state.day)
-                .reduce((accumulator, availability) => {
-                  if (!availability.interview){
-                    return accumulator += 1
-                  } else {
-                    return accumulator += 0
-                  }
-                }, 0)
+      return {
+        ...day,
+        spots: day.appointments.reduce((accumulator, id) => {
+                if (!state.appointments[id].interview){
+                  return accumulator += 1
+                } else {
+                  return accumulator += 0
+                }
+              }, 0)
         }
       } else {
         return day;
       }
-    });
-    return [...daysUpdate];
+    })
   };
 
+  
   /**
    * Purpose: (a) delete the interview 
    *          (b) update the API with axios 
@@ -87,10 +83,9 @@ export default function useApplicationData() {
         return {...state, appointments}
       }).then(state => {
         // update available spots for the day
-        const days = spots(state)
         return {
           ...state,
-          days
+          days: spots(state)
         }
       })
       .then(state => {
@@ -139,10 +134,9 @@ export default function useApplicationData() {
       })
       .then(state => {
         // spots are updated unless the form is being edited
-        const days = spots(state)
         return {
           ...state,
-          days
+          days: spots(state)
         }
       })
       .then(updateState => {
