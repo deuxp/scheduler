@@ -41,7 +41,7 @@ export default function useApplicationData() {
           ...day,
           spots: day.appointments.reduce((accumulator, id) => {
                   if (!state.appointments[id].interview){
-                    return accumulator += 1
+                    return accumulator + 1
                   } else {
                     return accumulator
                   }

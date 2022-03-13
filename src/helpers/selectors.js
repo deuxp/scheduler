@@ -2,7 +2,7 @@
 /**
  * @param {Object} state 
  * @param {String} day filter by day
- * @returns Array of the appointments for a specified day
+ * @returns new Array of appointment objects for a specified day
  */
 export function getAppointmentsForDay(state, day) {
   let result = [];
@@ -18,7 +18,7 @@ export function getAppointmentsForDay(state, day) {
 /**
  * Purpose: Complete the interview Object by replacing the interviewer's id 
  *          with their respective Object
- * @param {*} state 
+ * @param {Object} state 
  * @param {Object} interview {student:String, interviewer:Number}
  * @returns a new interview Object with the interviewer property updated info or 
  *          null if there is no interview
@@ -30,9 +30,14 @@ export function getInterview (state, interview) {
     const interviewer = state.interviewers[interview.interviewer]
     return {...interview, interviewer}
   }
-  return null
+  return null;
 }
 
+/**
+ * @param {Object} state 
+ * @param {String} day String of the day
+ * @returns new Array of interview Objects for a specified day
+ */
 export function getInterviewersForDay (state, day) {
   let result =[];
   if (state.days.length > 0) {
@@ -43,5 +48,5 @@ export function getInterviewersForDay (state, day) {
       }
     })
   }
-  return result
+  return result;
 };
