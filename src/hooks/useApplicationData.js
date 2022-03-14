@@ -1,38 +1,79 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import axios from "axios";
 
 export default function useApplicationData() {
     
-  const [state, setState] = useState({
+  //constants
+  const SET_DAY = 'SET_DAY',
+        SET_DAYS = 'SET_DAYS',
+        SET_APPOINTMENTS = 'SET_APPOINTMENTS',
+        SET_INTERVIEWERS = 'SET_INTERVIEWERS'
+
+  const apiDays = 'http://localhost:8001/api/days',
+        apiAppointments = 'http://localhost:8001/api/appointments',
+        apiInterviewers = 'http://localhost:8001/api/interviewers'
+  
+
+
+  const reducer = (state, action) => {
+    let newState;
+
+    // figure out if you want house the re-assignment logic in here
+    switch (action.type) {
+      case 'SET_DAY':
+        newState = { ...state, day: action.data };
+        break;
+      // change these defaults to logic .. find out what state is being passed 
+      // to this reducer
+      case 'SET_DAYS':
+        newState = { ...state, days: action.data };
+        break;
+      case 'SET_APPOINTMENTS':
+        newState = { ...state, appointments: action.data };
+        break;
+      case 'SET_INTERVIEWERS':
+        newState = { ...state, interviewers: action.data };
+        break;
+      default:
+        throw new Error(`\t${action.type} is not a valid action for Reducer!`);
+    }
+    return newState;
+  }
+
+  const initialState = {
     day: 'Monday',
     days: [],
     appointments: {},
     interviewers: {}
-  });
-  const setDay = day => setState({...state, day})
+  }
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // -  [ ] refactor this to use dispatch
+  const setDay = day => dispatch({type: SET_DAY, day})
+  
   
   useEffect(() => {
     Promise.all([
-      axios.get('http://localhost:8001/api/days'),
-      axios.get('http://localhost:8001/api/appointments'),
-      axios.get('http://localhost:8001/api/interviewers')
+      axios.get(apiDays),
+      axios.get(apiAppointments),
+      axios.get(apiInterviewers)
     ])
-    .then(payload => {
-      const [days, appointments, interviewers] = payload;
-      setState(prev => ({
-        ...prev,
-        days: days.data,
-        appointments: appointments.data,
-        interviewers: interviewers.data
-      }))
-    }) 
+    .then(response => {
+      // const [days, appointments, interviewers] = response;
+      const actions = [SET_DAYS, SET_APPOINTMENTS, SET_INTERVIEWERS]
+      response.map((payload, index) => {
+        dispatch({type: actions[index], data: payload})
+        return
+      }) 
+    })
   }, [])
 
   
   /**
    * Purpose: to update the number of avialable appoinments for a day
    * @param {Object} state The state Object
-   * @returns a new Array of day objects, with the spots property updated to current avaialbility
+   * @returns a new Array of day objects, with the spots property updated to 
+   *          current avaialbility
    */      
   function spots(state) {
     return state.days.map(day => {
@@ -40,13 +81,13 @@ export default function useApplicationData() {
         return {
           ...day,
           spots: day.appointments.reduce((accumulator, id) => {
-                  if (!state.appointments[id].interview){
-                    return accumulator + 1
-                  } else {
-                    return accumulator
-                  }
-                }, 0)
-              }
+            if (!state.appointments[id].interview){
+              return accumulator + 1
+            } else {
+              return accumulator
+            }
+          }, 0)
+        }
       } else {
         return day;
       }
@@ -60,8 +101,9 @@ export default function useApplicationData() {
    *          (c) update the state locally
    * @param {Number} id of appointment object
    * @returns undefined
-   * Behaviour: Promise based but only used for side-effects: setState & axios PUT request
-   *            also calls the spots() func to update the available spots for that day
+   * Behaviour: Promise based but only used for side-effects: setState & axios PUT 
+   *            request also calls the spots() func to update the available spots 
+   *            for that day
    */
   function deleteInterview(id) {
     const appointment = {
@@ -74,7 +116,7 @@ export default function useApplicationData() {
     }
     // axios update to the db
     return new Promise((resolve, reject) => {
-    axios.delete(`http://localhost:8001/api/appointments/${id}`)
+    axios.delete(`${api}/${id}`)
     .then(res => {
         if (res.status !== 204) {
           throw new Error()
@@ -124,7 +166,7 @@ export default function useApplicationData() {
       [id]: appointment
     }
     return new Promise((resolve, reject) => {
-      axios.put(`http://localhost:8001/api/appointments/${id}`, appointment)
+      axios.put(`${apiAppointments}/${id}`, appointment)
       .then(res => {
         if (res.status !== 204) {
           throw new Error()

@@ -41,7 +41,7 @@ function Appointment({ time, interview, interviewers, bookInterview, deleteInter
         setErrorMessage('cannot save appointment')
         transition(ERROR_SAVE, true)
       })
-  };
+  }
   
   // Deleting an appointment -- = -= -- -- -  -- --- -- -=  -== - = -
   function erase() {
