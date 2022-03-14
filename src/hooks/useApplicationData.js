@@ -1,13 +1,12 @@
-import { useState, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import axios from "axios";
 
 export default function useApplicationData() {
     
   //constants
   const SET_DAY = 'SET_DAY',
-        SET_DAYS = 'SET_DAYS',
-        SET_APPOINTMENTS = 'SET_APPOINTMENTS',
-        SET_INTERVIEWERS = 'SET_INTERVIEWERS'
+        SET_INTERVIEW = 'SET_INTERVIEW',
+        SET_APPLICATION_DATA = 'SET_APPLICATION_DATA'
 
   const apiDays = 'http://localhost:8001/api/days',
         apiAppointments = 'http://localhost:8001/api/appointments',
@@ -20,19 +19,17 @@ export default function useApplicationData() {
 
     // figure out if you want house the re-assignment logic in here
     switch (action.type) {
+      case 'SET_APPLICATION_DATA':
+        console.log('this is state in the reducer', state)
+
+        newState = { ...state, ...action.data }
+        console.log('this is the newState: ', newState)
+        break;
       case 'SET_DAY':
         newState = { ...state, day: action.data };
         break;
-      // change these defaults to logic .. find out what state is being passed 
-      // to this reducer
-      case 'SET_DAYS':
-        newState = { ...state, days: action.data };
-        break;
-      case 'SET_APPOINTMENTS':
-        newState = { ...state, appointments: action.data };
-        break;
-      case 'SET_INTERVIEWERS':
-        newState = { ...state, interviewers: action.data };
+      case 'SET_INTERVIEW':
+        newState = { };
         break;
       default:
         throw new Error(`\t${action.type} is not a valid action for Reducer!`);
@@ -48,8 +45,13 @@ export default function useApplicationData() {
   }
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // -  [ ] refactor this to use dispatch
-  const setDay = day => dispatch({type: SET_DAY, day})
+  const setDay = day => dispatch({type: SET_DAY, data: day})
+  
+  
+
+  useEffect(() => {
+    console.log('\tMonitoring: ', state)
+  }, [state])
   
   
   useEffect(() => {
@@ -59,12 +61,13 @@ export default function useApplicationData() {
       axios.get(apiInterviewers)
     ])
     .then(response => {
-      // const [days, appointments, interviewers] = response;
-      const actions = [SET_DAYS, SET_APPOINTMENTS, SET_INTERVIEWERS]
-      response.map((payload, index) => {
-        dispatch({type: actions[index], data: payload})
-        return
-      }) 
+      const [days, appointments, interviewers] = response
+      const initLoad = {
+        days: days.data,
+        appointments: appointments.data,
+        interviewers: interviewers.data
+      }
+      dispatch({type: SET_APPLICATION_DATA, data: initLoad})
     })
   }, [])
 
@@ -98,11 +101,11 @@ export default function useApplicationData() {
   /**
    * Purpose: (a) delete the interview 
    *          (b) update the API with axios 
-   *          (c) update the state locally
+   *          (c) update the state locSET_APPLICATION_DATAy
    * @param {Number} id of appointment object
    * @returns undefined
    * Behaviour: Promise based but only used for side-effects: setState & axios PUT 
-   *            request also calls the spots() func to update the available spots 
+   *            request also cSET_APPLICATION_DATAs the spots() func to update the available spots 
    *            for that day
    */
   function deleteInterview(id) {
@@ -116,7 +119,7 @@ export default function useApplicationData() {
     }
     // axios update to the db
     return new Promise((resolve, reject) => {
-    axios.delete(`${api}/${id}`)
+    axios.delete(`${apiAppointments}/${id}`)
     .then(res => {
         if (res.status !== 204) {
           throw new Error()
@@ -131,7 +134,7 @@ export default function useApplicationData() {
         }
       })
       .then(state => {
-        setState(state)
+        dispatch({type: SET_APPLICATION_DATA, data: state})
         resolve()
       })
       .catch(err => {
@@ -152,7 +155,7 @@ export default function useApplicationData() {
    *                      for the Edit mode.
    * @returns undefined 
    * Behaviour: Promise-based, but no value is passed, only side-effects: setState & axios PUT request
-   *            also calls the spots() func to update the available spots for that day
+   *            also cSET_APPLICATION_DATAs the spots() func to update the available spots for that day
    */
   function bookInterview(id, interview) {
     const appointment = {
@@ -181,9 +184,10 @@ export default function useApplicationData() {
           days: spots(state)
         }
       })
-      .then(updateState => {
+      .then(state => {
         // this is where we update the state wholly and once
-        setState(updateState)
+        // setState(updateState)
+        dispatch({type: SET_APPLICATION_DATA, data: state})
         resolve()
       })
       .catch(err => {

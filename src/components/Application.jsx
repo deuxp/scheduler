@@ -19,16 +19,15 @@ export default function Application() {
   // shape appointment data -> appointment: { id, time, interview }
   const schedules = dailyAppointements.map(appointment => {
       // map appointment.interview.interviewer[id] = {...}
-      const interview = getInterview(state, appointment.interview)
-      const interviewers = getInterviewersForDay(state, state.day)
       
-      return <Appointment key={appointment.id}
-                          id={appointment.id}
-                          time={appointment.time}
-                          interview={interview}
-                          interviewers={interviewers}
-                          bookInterview={bookInterview}
-                          deleteInterview={deleteInterview}
+      return <Appointment 
+        key={appointment.id}
+        id={appointment.id}
+        time={appointment.time}
+        interview={() => getInterview(state, appointment.interview)}
+        interviewers={() => getInterviewersForDay(state, state.day)}
+        bookInterview={bookInterview}
+        deleteInterview={deleteInterview}
       />
   })
   // CSS pseudoclass -> appointment__add:last-type: {display: none;}
