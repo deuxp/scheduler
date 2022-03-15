@@ -22,7 +22,7 @@ export default function Application() {
         id={appointment.id}
         time={appointment.time}
         interview={getInterview(state, appointment.interview)}
-        interviewers={() => getInterviewersForDay(state, state.day)}
+        interviewers={getInterviewersForDay(state, state.day)}
         bookInterview={bookInterview}
         deleteInterview={deleteInterview}
       />
