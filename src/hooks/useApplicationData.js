@@ -42,10 +42,6 @@ export default function useApplicationData() {
   const setDay = day => dispatch({type: SET_DAY, data: day})
 
   useEffect(() => {
-    console.log('\tMonitoring: ', state)
-  }, [state])
-  
-  useEffect(() => {
     Promise.all([
       axios.get(apiDays),
       axios.get(apiAppointments),
