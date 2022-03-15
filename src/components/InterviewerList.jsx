@@ -2,15 +2,10 @@ import React from 'react'
 import InterviewerListItem from './InterviewerListItem'
 import './InterviewerList.scss'
 
-/** Props
- * - [X] Interviewers:Array
-    * - [X] interviewer:id held in the state instead of a name: Number  STATE
-    * - [X] setInterviewer:func()                                       STATE
-    * - [ ] set state in common ancestor
- * - [X] selected:Boolean - evaluation name === interviewer <- state
- * - [X] set key=id
+/** 
+ * - Interviewers:Array of Numbers representing the interviewers id's
+ * - selected:Boolean - name === interviewer determines if interviewer selected
  */
-
 
 function InterviewerList({interviewers, value, onChange}) {
 

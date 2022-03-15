@@ -5,13 +5,13 @@ import classNames from 'classnames';
 /**
  * takes in 4 props:
  * 
-    - [X] name:String the   -> name of the day
-    - [X] spots:Number      -> the number of spots remaining - used twice: a full day is indicated by 0 slots
-    - [X] selected:Boolean  -> true or false declaring that this day is selected
-    - [X] setDay:Function   -> accepts the name of the day eg. "Monday", "Tuesday"
-    - [X] dayClass conditional class appending
+    - name:String the   -> name of the day
+    - spots:Number      -> the number of spots remaining - used twice: a full day is indicated by 0 slots
+    - selected:Boolean  -> true or false declaring that this day is selected
+    - setDay:Function   -> accepts the name of the day eg. "Monday", "Tuesday"
+    - dayClass conditional class appending
 
-    Problem: uses the selected prop to determine which styles to apply
+    Behaviour: uses the selected prop to determine which styles to apply
  */
 
     export default function DayListItem({name, spots, setDay, selected}) {
