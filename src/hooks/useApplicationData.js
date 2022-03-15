@@ -11,8 +11,6 @@ export default function useApplicationData() {
   const apiDays = 'http://localhost:8001/api/days',
         apiAppointments = 'http://localhost:8001/api/appointments',
         apiInterviewers = 'http://localhost:8001/api/interviewers'
-  
-
 
   const reducer = (state, action) => {
     let newState;
@@ -20,10 +18,7 @@ export default function useApplicationData() {
     // figure out if you want house the re-assignment logic in here
     switch (action.type) {
       case 'SET_APPLICATION_DATA':
-        console.log('this is state in the reducer', state)
-
         newState = { ...state, ...action.data }
-        console.log('this is the newState: ', newState)
         break;
       case 'SET_DAY':
         newState = { ...state, day: action.data };
@@ -44,15 +39,11 @@ export default function useApplicationData() {
     interviewers: {}
   }
   const [state, dispatch] = useReducer(reducer, initialState);
-
   const setDay = day => dispatch({type: SET_DAY, data: day})
-  
-  
 
   useEffect(() => {
     console.log('\tMonitoring: ', state)
   }, [state])
-  
   
   useEffect(() => {
     Promise.all([

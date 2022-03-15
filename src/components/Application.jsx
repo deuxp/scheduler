@@ -15,23 +15,19 @@ export default function Application() {
     deleteInterview
   } = useApplicationData()
 
-  const dailyAppointements = getAppointmentsForDay(state, state.day);
-  // shape appointment data -> appointment: { id, time, interview }
-  const schedules = dailyAppointements.map(appointment => {
-      // map appointment.interview.interviewer[id] = {...}
-      
+  const appoinments = getAppointmentsForDay(state, state.day)
+    .map(appointment => {
       return <Appointment 
         key={appointment.id}
         id={appointment.id}
         time={appointment.time}
-        interview={() => getInterview(state, appointment.interview)}
-        interviewers={() => getInterviewersForDay(state, state.day)}
+        interview={getInterview(state, appointment.interview)}
+        interviewers={getInterviewersForDay(state, state.day)}
         bookInterview={bookInterview}
         deleteInterview={deleteInterview}
       />
   })
-  // CSS pseudoclass -> appointment__add:last-type: {display: none;}
-  schedules.push(<Appointment key='last' time='5pm' />)
+  appoinments.push(<Appointment key='last' time='5pm' />)
   
   return (
     <main className="layout">
@@ -56,7 +52,7 @@ export default function Application() {
         />
       </section>
       <section className="schedule">
-        {schedules}
+        {appoinments}
       </section>
     </main>
   );
